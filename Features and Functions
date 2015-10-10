@@ -3,37 +3,40 @@ Features:
 2) Input code into phone application to gain authorization.
 3) Give out temporary passwords for a given time interval. 
 
-Pin will be stored in Arduino's 1 kilobyte permanent memory. When a signal is received, run an encryptPIN function on hard drive PIN and current system time. 
-Default preference will be a block of time, starting and ending time (Military Time). Can be changed to a countdown.
+Pin will be stored in Arduino's 1 kilobyte permanent memory. When a signal is received, run an encryptPIN function on hard drive PIN and current system time.
+
+User can specify a time window in which to grant another user a key. This will be represented to the user as a calendar / time selection box and internally as start/end offsets from the epoch.
 
 Functions:
 
+createRandomPIN(authorization_level):
+    
 
-encryptPIN(unencrypted_PIN, time):
+encryptPIN(PIN, current_time):
     returns an encrypted PIN
 
-addKey(unencrypted_PIN, start_time, end_time, time): 
-    for ever temporary key on disk:
+addKey(PIN, start_time, end_time, current_time): 
+    foreach temporary PIN on disk:
         if out of date, delete
         if there's no space for any more keys
             return Error
-        Write new key, along with start and end time
+        Write PIN, along with start and end time
 
-isMatch(unencrypted_PIN, received_PIN, time):
-    if encryptPIN(unencrypted_PIN, time) == received_PIN:
+isMatch(PIN, key, current_time):
+    if encryptPIN(PIN, current_time) == key:
         return true
     return false
 
-getAccessLevel(temp_key):
-    gets an access level for temp_key
-    maybe some function of temp_key % 10 or something
+getAccessLevel(PIN):
+    gets an access level for PIN
+    maybe some function of PIN % 10 or something
 
-authenticate(encryptedPIN):
+authenticate(key):
     get the master PIN.
     if isMatch:
         return full access
-    foreach temporary key on disk:
+    foreach temporary PIN on disk:
         if out of date, skip
         if isMatch:
-            return getAccessLevel(key)
+            return getAccessLevel(PIN)
     return no access

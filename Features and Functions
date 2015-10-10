@@ -1,0 +1,39 @@
+Features:
+1) Door will be set with an initial pin. This pin will be given unencrypted in the box / with the product
+2) Input code into phone application to gain authorization.
+3) Give out temporary passwords for a given time interval. 
+
+Pin will be stored in Arduino's 1 kilobyte permanent memory. When a signal is received, run an encryptPIN function on hard drive PIN and current system time. 
+Default preference will be a block of time, starting and ending time (Military Time). Can be changed to a countdown.
+
+Functions:
+
+
+encryptPIN(unencrypted_PIN, time):
+    returns an encrypted PIN
+
+addKey(unencrypted_PIN, start_time, end_time, time): 
+    for ever temporary key on disk:
+        if out of date, delete
+        if there's no space for any more keys
+            return Error
+        Write new key, along with start and end time
+
+isMatch(unencrypted_PIN, received_PIN, time):
+    if encryptPIN(unencrypted_PIN, time) == received_PIN:
+        return true
+    return false
+
+getAccessLevel(temp_key):
+    gets an access level for temp_key
+    maybe some function of temp_key % 10 or something
+
+authenticate(encryptedPIN):
+    get the master PIN.
+    if isMatch:
+        return full access
+    foreach temporary key on disk:
+        if out of date, skip
+        if isMatch:
+            return getAccessLevel(key)
+    return no access

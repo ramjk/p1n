@@ -61,12 +61,11 @@ public class P1Nmain extends Activity implements
 		switch (number) {
 		case 1:
 			mTitle = getString(R.string.title_section1);
+			// setContentView(R.layout.doors);
 			break;
 		case 2:
 			mTitle = getString(R.string.title_section2);
-			break;
-		case 3:
-			mTitle = getString(R.string.title_section3);
+			// setContentView(R.layout.addnewmasterkey);
 			break;
 		}
 	}
@@ -130,7 +129,7 @@ public class P1Nmain extends Activity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_p1_nmain,
+			View rootView = inflater.inflate(getLayout(),
 					container, false);
 			return rootView;
 		}
@@ -138,8 +137,22 @@ public class P1Nmain extends Activity implements
 		@Override
 		public void onAttach(Activity activity) {
 			super.onAttach(activity);
-			((P1Nmain) activity).onSectionAttached(getArguments().getInt(
-					ARG_SECTION_NUMBER));
+			((P1Nmain) activity).onSectionAttached(getSection());
+		}
+
+		public int getLayout() {
+			switch (getSection()) {
+			case 1:
+				return R.layout.doors;
+			case 2:
+				return R.layout.addnewmasterkey;
+			default:
+				throw new IllegalArgumentException();
+			}
+		}
+
+		public int getSection() {
+			return getArguments().getInt(ARG_SECTION_NUMBER);
 		}
 	}
 

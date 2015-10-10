@@ -2,12 +2,13 @@
 <resources>
 
     <string name="app_name">P1N</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section1">Doors</string>
+    <string name="title_section2">Add New Master Key</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
+    <string name="enter_new_master_key">&quot;Enter New Master Key&quot;</string>
+    <string name="enter_name_of_door">&quot;Enter Name of Door&quot;</string>
 
 </resources>

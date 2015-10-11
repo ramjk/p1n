@@ -28,7 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class P1Nmain extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class P1Nmain extends Activity implements
+		NavigationDrawerFragment.NavigationDrawerCallbacks {
 	public static final int REQUEST_ENABLE_BT = 123456;
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -40,7 +41,8 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
-	private Stack<Fragment> goBack;
+	private Stack<Fragment> goBack = new Stack<Fragment>();
+	private boolean useStack = false;
 	private P1NIO io = new P1NIO(this);
 	private P1NErrors err = new P1NErrors(this);
 
@@ -54,12 +56,14 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		mTitle = getTitle();
 
 		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+				(DrawerLayout) findViewById(R.id.drawer_layout));
 	}
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
+		useStack = false;
 		setFragment(PlaceholderFragment.newInstance(position + 1, this));
 	}
 
@@ -107,13 +111,15 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	}
 
 	public void checkBluetoothEnabled() {
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
+				.getDefaultAdapter();
 		if (mBluetoothAdapter == null) {
 			err.bluetoothNotFound(this);
 			return;
 		}
 		if (!mBluetoothAdapter.isEnabled()) {
-			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			Intent enableBtIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		}
 	}
@@ -132,23 +138,28 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	}
 
 	protected void processDoor(DoorInfo doorInfo) {
-		Fragment f = new DoorUI(doorInfo);
-		goBack.push(f);
-		setFragment(f);
+		useStack = true;
+		setFragment(new DoorUI(doorInfo));
 	}
 
 	private void setFragment(Fragment f) {
 		FragmentManager fragmentManager = getFragmentManager();
+		goBack.push(f);
+		while (goBack.size() > 2) {
+			goBack.remove(0);
+		}
 		fragmentManager.beginTransaction().replace(R.id.container, f).commit();
 
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (goBack.isEmpty())
+		if (!useStack || goBack.size() < 2)
 			super.onBackPressed();
-		else
+		else {
+			goBack.pop();
 			setFragment(goBack.pop());
+		}
 	}
 
 	/**
@@ -164,7 +175,8 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
-		public static PlaceholderFragment newInstance(int sectionNumber, P1Nmain io) {
+		public static PlaceholderFragment newInstance(int sectionNumber,
+				P1Nmain io) {
 			PlaceholderFragment fragment = new PlaceholderFragment(io);
 			Bundle args = new Bundle();
 			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -179,7 +191,8 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
 
 			View rootView = inflater.inflate(getLayout(), container, false);
 			switch (getLayout()) {
@@ -194,26 +207,30 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 
 		private void addNewMasterKey(final View rootView) {
 			final Spinner sp = (Spinner) rootView.findViewById(R.id.spinner1);
-			final BluetoothDevice[] devices = BluetoothAdapter.getDefaultAdapter().getBondedDevices()
+			final BluetoothDevice[] devices = BluetoothAdapter
+					.getDefaultAdapter().getBondedDevices()
 					.toArray(new BluetoothDevice[0]);
 			String[] data = new String[devices.length + 1];
 			data[0] = "Select a bluetooth device";
 			for (int i = 0; i < devices.length; i++) {
 				data[i + 1] = devices[i].getName();
 			}
-			ArrayAdapter<String> aas = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
-					data);
+			ArrayAdapter<String> aas = new ArrayAdapter<String>(getActivity(),
+					android.R.layout.simple_spinner_item, data);
 			sp.setAdapter(aas);
 			Button b = (Button) rootView.findViewById(R.id.button1);
 			b.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					String doorName = ((EditText) rootView.findViewById(R.id.editText1)).getText().toString().trim();
+					String doorName = ((EditText) rootView
+							.findViewById(R.id.editText1)).getText().toString()
+							.trim();
 					if (doorName.equals("")) {
 						main.err.nameMustNotBeEmpty();
 						return;
 					}
-					String sMasterKey = ((EditText) rootView.findViewById(R.id.editText2)).getText().toString();
+					String sMasterKey = ((EditText) rootView
+							.findViewById(R.id.editText2)).getText().toString();
 					int masterKey;
 					try {
 						masterKey = Integer.parseInt(sMasterKey);
@@ -234,11 +251,13 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		}
 
 		private void loadDoors(final View rootView) {
-			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearLayout);
+			LinearLayout ll = (LinearLayout) rootView
+					.findViewById(R.id.linearLayout);
 			final List<DoorInfo> dis = main.io.readDoors();
 			if (dis.size() == 0) {
 				TextView tv = new TextView(main);
-				LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
+						LayoutParams.WRAP_CONTENT);
 				tv.setText("You have no doors. Please go to 'Add New Door' to add a new door.");
 				lp.horizontalMargin = 200;
 				tv.setLayoutParams(lp);
@@ -252,7 +271,8 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 			};
 			for (int i = 0; i < dis.size(); i++) {
 				Button b = new Button(getActivity());
-				LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT,
+						LayoutParams.WRAP_CONTENT);
 				lp.horizontalMargin = 10;
 				lp.verticalMargin = 5;
 				lp.gravity = Gravity.CENTER;

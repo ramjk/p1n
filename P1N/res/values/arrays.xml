@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dummydatat">
+        <item >Kavi Gupta</item>
+        <item >Ram Kal</item>
+        <item >Girish Balaji</item>
+        <item >Haaris Khan</item>
+    </string-array>
+
+    
+</resources>

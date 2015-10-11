@@ -55,5 +55,17 @@
         android:gravity="center"
         android:text="Add"
         android:textSize="30sp" />
+    
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="5dip"
+        android:paddingTop="25dip"
+        android:text="If you do not see your device, \n 1) Turn on Bluetooth \n 2) Pre-Pair your Bluetooth \n 3) Restart P1N"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#696969"
+        android:textSize="14sp" />
 
 </LinearLayout>

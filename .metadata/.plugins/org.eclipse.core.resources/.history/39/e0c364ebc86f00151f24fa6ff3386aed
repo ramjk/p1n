@@ -208,7 +208,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 					}
 					BluetoothDevice device = devices[selected - 1];
 					main.io.writeDoor(doorName, masterKey, device);
-					main.onNavigationDrawerItemSelected(1);
+					main.onNavigationDrawerItemSelected(0);
 				}
 			});
 		}

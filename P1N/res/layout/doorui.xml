@@ -25,7 +25,7 @@
         android:gravity="center"
         android:text="Unlock"
         android:textSize="30sp" />
-    <Button
+    <!--<Button
         android:id="@+id/button2"
         android:layout_width="fill_parent"
         android:layout_height="80dp"
@@ -34,7 +34,7 @@
         android:layout_marginRight="10dp"     
         android:gravity="center"
         android:text="Send Temp Key"
-        android:textSize="30sp" />
+        android:textSize="30sp" />-->
     <Button
         android:id="@+id/button3"
         android:layout_width="fill_parent"

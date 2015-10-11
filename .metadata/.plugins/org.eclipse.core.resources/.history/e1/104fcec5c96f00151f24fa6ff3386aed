@@ -217,12 +217,9 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		private void loadDoors(final View rootView) {
 			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearLayout);
 			final List<DoorInfo> dis = main.io.readDoors();
-			if (dis.size() == 0) {
+			if (dis.size() == 0){
 				TextView tv = new TextView(main);
-				LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 				tv.setText("You have no doors. Please go to 'Add New Door' to add a new door.");
-				lp.horizontalMargin = 200;
-				tv.setLayoutParams(lp);
 				ll.addView(tv);
 			}
 			OnClickListener ocl = new OnClickListener() {
@@ -239,7 +236,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 				lp.gravity = Gravity.CENTER;
 				b.setLayoutParams(lp);
 				b.setTextSize(30);
-				b.setHeight(250);
+				b.setHeight(130);
 				b.setId(i);
 				b.setText(dis.get(i).name);
 				b.setOnClickListener(ocl);

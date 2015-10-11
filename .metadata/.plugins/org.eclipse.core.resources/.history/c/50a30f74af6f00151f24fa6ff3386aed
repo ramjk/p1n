@@ -1,0 +1,23 @@
+package p1nata.p1n;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class DoorInfo {
+	public String name;
+	public int masterkey;
+	public String mac_address;
+	public DoorInfo(String name, int id, String mac_address) {
+		super();
+		this.name = name;
+		this.masterkey = id;
+		this.mac_address = mac_address;
+	}
+	public String write() {
+		return name + "\t" + masterkey + "\t" + mac_address;
+	}
+	public static DoorInfo read(String asString) {
+		Matcher mat = Pattern.compile("(.+)\t([^\t]+)\t([^\t]+)").matcher(asString);
+		return new DoorInfo(mat.group(1), Integer.parseInt(mat.group(2)), mat.group(3));
+	}
+}

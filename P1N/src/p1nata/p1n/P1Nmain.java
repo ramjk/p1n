@@ -2,6 +2,7 @@ package p1nata.p1n;
 
 import org.xml.sax.ErrorHandler;
 
+import android.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;

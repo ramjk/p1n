@@ -1,0 +1,26 @@
+package p1nata.p1n;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+public class P1NIO {
+	private final P1Nmain main;
+
+	public P1NIO(P1Nmain main) {
+		this.main = main;
+	}
+
+	public List<DoorInfo> readDoors() {
+		List<DoorInfo> di = new ArrayList<DoorInfo>();
+		for (File f : main.getFilesDir().listFiles()) {
+			di.add(readDoorInfo(f.getName()));
+		}
+		return di;
+	}
+
+	private DoorInfo readDoorInfo(String file) {
+		
+		return null;
+	}
+}

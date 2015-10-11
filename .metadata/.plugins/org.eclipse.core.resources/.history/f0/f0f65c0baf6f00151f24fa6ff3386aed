@@ -1,0 +1,21 @@
+package p1nata.p1n;
+
+public class DoorInfo {
+	public String name;
+	public int id;
+	public String mac_address;
+
+	public DoorInfo(String name, int id, String bluetooth_name, String mac_address) {
+		super();
+		this.name = name;
+		this.id = id;
+		this.mac_address = mac_address;
+	}
+	public String write() {
+		return name + "\t" + id + "\t" + mac_address;
+	}
+	public static DoorInfo read(String asString) {
+		String[] vals = asString.split("\t");
+		return new DoorInfo(vals[0], Integer.parseInt(vals[1]), vals[2], vals[3]);
+	}
+}

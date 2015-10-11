@@ -1,0 +1,9 @@
+package p1nata.p1n;
+
+public class P1NIO {
+	private final P1Nmain main;
+	public P1NIO(P1Nmain main) {
+		this.main = main;
+	}
+	
+}

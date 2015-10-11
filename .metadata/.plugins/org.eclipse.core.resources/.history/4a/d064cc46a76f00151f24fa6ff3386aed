@@ -1,0 +1,11 @@
+package p1nata.p1n;
+
+import android.content.Context;
+import android.widget.ListView;
+
+public class BluetoothChooser extends ListView {
+	public BluetoothChooser(Context context) {
+		super(context);
+	}
+
+}

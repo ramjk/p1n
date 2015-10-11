@@ -1,11 +1,10 @@
 #include <Servo.h>
 #include <EEPROM.h>
-#include <Time.h>
 
+Servo myservo;
 
 byte buffer[256];
-int masterPIN = 0;
-bool isMasterPINread = false;
+int masterPIN = 1234;
 
 
 typedef union{
@@ -13,20 +12,20 @@ typedef union{
   long value;
 } bytes_to_long;
 
-int encryptPin(long unencrypted_PIN, long current_time) {
+int encryptPin(long unencrypted_PIN) {
   // Use some sort of basic encryption algorithm to encrypt the PIN
   
   return unencrypted_PIN;
 }
 
-void addKey(long unencrypted_PIN, long start_time, long end_time, long current_time) {
+void addKey(long unencrypted_PIN) {
   // Adds key to disk
   
 }
 
-bool isMatch(long unencrypted_PIN, long received_PIN, long current_time) {
+bool isMatch(long unencrypted_PIN, long received_PIN) {
   // If the encrypted pin is equivalent to the received pin, return True
-  long encrypted_PIN = encryptPin(unencrypted_PIN, current_time);
+  long encrypted_PIN = encryptPin(unencrypted_PIN);
   return encrypted_PIN == received_PIN;
 }
 
@@ -35,27 +34,20 @@ int getAccessLevel(long temp_key) {
   return 1;
 }
 
-bool authenticate(long unencrypted_PIN, long received_PIN, long current_time) {
-  return isMatch(unencrypted_PIN, received_PIN, current_time);
+bool authenticate(long unencrypted_PIN, long received_PIN) {
+  return isMatch(unencrypted_PIN, received_PIN);
 }
 
-
-
 void setup() {
+  pinMode(12, OUTPUT);
+  digitalWrite(12, HIGH);
+  myservo.attach(5);
   Serial.begin(9600);
 }
 
 void loop() {
-  if(!isMasterPINread) {
-    bytes_to_long values;
-    for(int i = 0; i < 4; i++) {
-      values.bytes[i] = EEPROM.read(i);
-    }
-    masterPIN = values.value;
-    isMasterPINread = true;
-
-
-  long current_time = now();
+  Serial.println("Initiating...");
+  delay(5000);
   int len = Serial.available();
   if(len > 0) {
     bytes_to_long bytes;
@@ -63,7 +55,18 @@ void loop() {
     for(int i = 0; i < max_i; i++) {
       bytes.bytes[i] = Serial.read();
     }
+    while(Serial.available()) Serial.read();
+    digitalWrite(12, LOW);
+    Serial.println(bytes.value);
+    if(authenticate(masterPIN, bytes.value)) {
+      myservo.write(180);
+      delay(3000);
+      myservo.write(0);
     }
+    delay(1000);
+    Serial.println("3.3 should be off");
+    digitalWrite(12, HIGH);
+    while(Serial.available()) Serial.read();
   }
 }
 

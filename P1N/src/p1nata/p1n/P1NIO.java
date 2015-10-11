@@ -1,11 +1,17 @@
 package p1nata.p1n;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 
 public class P1NIO {
 	private final P1Nmain main;
@@ -23,13 +29,54 @@ public class P1NIO {
 				// should not happen. Just ignore and continue
 			}
 		}
+		di.add(new DoorInfo("Kavi Gupta", 0, 1000, "a:b:c"));
+		di.add(new DoorInfo("Haaris Khan", 1, 2346, "a:b:c"));
+		di.add(new DoorInfo("Janika Dhindi", 2, 1000, "a:b:c"));
+		di.add(new DoorInfo("Girish Balaji", 3, 3567890, "a:b:c"));
 		return di;
 	}
 
 	private DoorInfo readDoorInfo(String id) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(main.openFileInput(id)));
+		return DoorInfo.read(readSingleLine(id));
+	}
+
+	private String readSingleLine(String file) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				main.openFileInput(file)));
 		String ln = br.readLine();
 		br.close();
-		return DoorInfo.read(ln);
+		return ln;
 	}
+
+	private void writeSingleLine(String file, String toWrite)
+			throws IOException {
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+				main.openFileOutput(file, Activity.MODE_PRIVATE)));
+		bw.write(toWrite + "\n");
+		bw.close();
+
+	}
+
+	public void writeDoor(String doorName, int masterKey, BluetoothDevice device) {
+		int usableID;
+		for (int i = 0;; i++) {
+			try {
+				readDoorInfo(Integer.toString(i));
+				continue;
+			} catch (IOException e) {
+				// the file is not found
+				usableID = i;
+				break;
+			}
+		}
+		System.out.println("Writing to file " + usableID + "; " + doorName);
+		try {
+			writeSingleLine(Integer.toString(usableID), new DoorInfo(doorName,
+					usableID, masterKey, device.getAddress()).write());
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+
+	}
+
 }

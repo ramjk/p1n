@@ -1,7 +1,12 @@
+#include <Servo.h>
 #include <EEPROM.h>
 #include <Time.h>
 
+
 byte buffer[256];
+int masterPIN = 0;
+bool isMasterPINread = false;
+
 
 typedef union{
   byte bytes[4];
@@ -31,19 +36,25 @@ int getAccessLevel(long temp_key) {
 }
 
 bool authenticate(long unencrypted_PIN, long received_PIN, long current_time) {
-  if(isMatch(unencrypted_PIN, received_PIN, current_time)) {
-    return true;
-  }
-  else {
-    return false;
-  }
+  return isMatch(unencrypted_PIN, received_PIN, current_time);
 }
 
+
+
 void setup() {
-  
+  Serial.begin(9600);
 }
 
 void loop() {
+  if(!isMasterPINread) {
+    bytes_to_long values;
+    for(int i = 0; i < 4; i++) {
+      values.bytes[i] = EEPROM.read(i);
+    }
+    masterPIN = values.value;
+    isMasterPINread = true;
+
+
   long current_time = now();
   int len = Serial.available();
   if(len > 0) {
@@ -52,7 +63,7 @@ void loop() {
     for(int i = 0; i < max_i; i++) {
       bytes.bytes[i] = Serial.read();
     }
-    value = EEPROM.read(
+    }
   }
 }
 

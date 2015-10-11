@@ -19,9 +19,9 @@
         android:id="@+id/editText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="25dip"
+        android:ems="10"
         android:hint="@string/enter_name_of_door"
-        android:ems="10" >
+        android:paddingTop="25dip" >
 
         <requestFocus />
     </EditText>
@@ -30,9 +30,29 @@
         android:id="@+id/editText2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="25dip"
         android:ems="10"
         android:hint="@string/enter_new_master_key"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:paddingTop="25dip" />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawSelectorOnTop="true"
+        android:text="@string/bluetooth_selecting_hint"
+        android:paddingTop="25dip"
+        android:entries="@array/dummydatat"/>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"     
+        android:gravity="center"
+        android:text="Connect"
+        android:textSize="30sp" />
 
 </LinearLayout>

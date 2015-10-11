@@ -217,7 +217,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		private void loadDoors(final View rootView) {
 			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearLayout);
 			final List<DoorInfo> dis = main.io.readDoors();
-			if (dis.size() == 0) {
+			if (dis.size() == 0){
 				TextView tv = new TextView(main);
 				tv.setText("You have no doors. Please go to 'Add New Door' to add a new door.");
 				ll.addView(tv);

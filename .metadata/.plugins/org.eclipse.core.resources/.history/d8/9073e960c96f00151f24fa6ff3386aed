@@ -29,6 +29,10 @@ public class P1NIO {
 				// should not happen. Just ignore and continue
 			}
 		}
+		di.add(new DoorInfo("Kavi Gupta", 0, 1000, "a:b:c"));
+		di.add(new DoorInfo("Haaris Khan", 1, 2346, "a:b:c"));
+		di.add(new DoorInfo("Janika Dhindi", 2, 1000, "a:b:c"));
+		di.add(new DoorInfo("Girish Balaji", 3, 3567890, "a:b:c"));
 		return di;
 	}
 

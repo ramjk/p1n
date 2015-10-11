@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 public class P1Nmain extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 	public static final int REQUEST_ENABLE_BT = 123456;
@@ -217,11 +216,6 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		private void loadDoors(final View rootView) {
 			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearLayout);
 			final List<DoorInfo> dis = main.io.readDoors();
-			if (dis.size() == 0) {
-				TextView tv = new TextView(main);
-				tv.setText("You have no doors. Please go to 'Add New Door' to add a new door.");
-				ll.addView(tv);
-			}
 			OnClickListener ocl = new OnClickListener() {
 				@Override
 				public void onClick(View v) {

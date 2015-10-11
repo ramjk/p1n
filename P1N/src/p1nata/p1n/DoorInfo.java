@@ -1,15 +1,13 @@
 package p1nata.p1n;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class DoorInfo {
 	public final String name;
 	public final int internalID;
 	public final int masterkey;
 	public final String mac_address;
 
-	public DoorInfo(String name, int internalID, int masterkey, String mac_address) {
+	public DoorInfo(String name, int internalID, int masterkey,
+			String mac_address) {
 		super();
 		this.name = name;
 		this.internalID = internalID;
@@ -22,7 +20,12 @@ public class DoorInfo {
 	}
 
 	public static DoorInfo read(String asString) {
-		Matcher mat = Pattern.compile("(.+)\t([^\t]+)\t([^\t]+)\t([^\t]+)").matcher(asString);
-		return new DoorInfo(mat.group(1), Integer.parseInt(mat.group(2)), Integer.parseInt(mat.group(3)), mat.group(4));
+		int lt = asString.lastIndexOf('\t');
+		int lt2 = asString.lastIndexOf('\t', lt - 1);
+		int lt3 = asString.lastIndexOf('\t', lt2 - 1);
+		return new DoorInfo(asString.substring(0, lt3),
+				Integer.parseInt(asString.substring(lt3 + 1, lt2)),
+				Integer.parseInt(asString.substring(lt2 + 1, lt)),
+				asString.substring(lt + 1));
 	}
 }

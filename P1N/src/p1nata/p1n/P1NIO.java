@@ -69,11 +69,11 @@ public class P1NIO {
 				break;
 			}
 		}
+		System.out.println("Writing to file " + usableID + "; " + doorName);
 		try {
 			writeSingleLine(Integer.toString(usableID), new DoorInfo(doorName,
 					usableID, masterKey, device.getAddress()).write());
 		} catch (IOException e) {
-			// should not happen
 			throw new IllegalStateException(e);
 		}
 

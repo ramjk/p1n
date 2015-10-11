@@ -132,9 +132,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	}
 
 	protected void processDoor(DoorInfo doorInfo) {
-		Fragment f = new DoorUI(doorInfo);
-		goBack.push(f);
-		setFragment(f);
+		setFragment(new DoorUI(doorInfo));
 	}
 
 	private void setFragment(Fragment f) {

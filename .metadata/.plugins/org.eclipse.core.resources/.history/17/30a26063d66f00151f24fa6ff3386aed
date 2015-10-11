@@ -132,9 +132,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	}
 
 	protected void processDoor(DoorInfo doorInfo) {
-		Fragment f = new DoorUI(doorInfo);
-		goBack.push(f);
-		setFragment(f);
+		setFragment(R.id.container, new DoorUI(doorInfo));
 	}
 
 	private void setFragment(Fragment f) {
@@ -147,14 +145,13 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	public void onBackPressed() {
 		if (goBack.isEmpty())
 			super.onBackPressed();
-		else
-			setFragment(goBack.pop());
+
 	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class PlaceholderFragment extends Fragment { 
 		/**
 		 * The fragment argument representing the section number for this
 		 * fragment.
@@ -192,7 +189,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 			return rootView;
 		}
 
-		private void addNewMasterKey(final View rootView) {
+		private void addNewMasterKey(final View rootView) { 
 			final Spinner sp = (Spinner) rootView.findViewById(R.id.spinner1);
 			final BluetoothDevice[] devices = BluetoothAdapter.getDefaultAdapter().getBondedDevices()
 					.toArray(new BluetoothDevice[0]);

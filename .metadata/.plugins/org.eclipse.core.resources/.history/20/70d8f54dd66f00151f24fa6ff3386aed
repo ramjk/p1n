@@ -60,7 +60,6 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
-		setFragment(PlaceholderFragment.newInstance(position + 1, this));
 	}
 
 	public void onSectionAttached(int number) {
@@ -132,9 +131,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	}
 
 	protected void processDoor(DoorInfo doorInfo) {
-		Fragment f = new DoorUI(doorInfo);
-		goBack.push(f);
-		setFragment(f);
+		getFragmentManager().beginTransaction().replace(R.id.container, new DoorUI(doorInfo)).commit();
 	}
 
 	private void setFragment(Fragment f) {
@@ -147,8 +144,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	public void onBackPressed() {
 		if (goBack.isEmpty())
 			super.onBackPressed();
-		else
-			setFragment(goBack.pop());
+
 	}
 
 	/**

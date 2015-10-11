@@ -242,7 +242,7 @@ public class P1Nmain extends Activity implements
 				lp.gravity = Gravity.CENTER;
 				b.setLayoutParams(lp);
 				b.setTextSize(30);
-				b.setHeight(130);
+				b.setHeight(250);
 				b.setId(i);
 				b.setText(dis.get(i).name);
 				b.setOnClickListener(ocl);

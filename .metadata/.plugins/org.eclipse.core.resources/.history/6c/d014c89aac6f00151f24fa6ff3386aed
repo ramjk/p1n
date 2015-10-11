@@ -27,7 +27,6 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,7 +39,6 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 	}
-
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
@@ -48,7 +46,6 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
 				.commit();
 	}
-
 	public void onSectionAttached(int number) {
 		switch (number) {
 		case 1:
@@ -61,14 +58,12 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 			break;
 		}
 	}
-
 	public void restoreActionBar() {
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setTitle(mTitle);
 	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (!mNavigationDrawerFragment.isDrawerOpen()) {
@@ -81,7 +76,6 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -93,30 +87,28 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	public void checkBluetoothEnabled() {
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (mBluetoothAdapter == null) {
-			P1NErrors.bluetoothNotFound(this);
-		}
-		if (!mBluetoothAdapter.isEnabled()) {
-			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-		}
+	public void checkBluetoothEnabled(){
+	    BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+	    if (mBluetoothAdapter == null) {
+	    	P1NErrors.bluetoothNotFound(this);
+	    }
+	    if (!mBluetoothAdapter.isEnabled()) {
+	        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+	        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+	    }
 	}
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		switch (requestCode) {
+		switch(requestCode){
 		case REQUEST_ENABLE_BT:
-			if (resultCode != Activity.RESULT_OK) {
+			if(resultCode != Activity.RESULT_OK){
 				P1NErrors.bluetoothNotEnabled(this);
 			}
 			break;
 		}
 	}
-
+	
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -143,13 +135,17 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			View rootView = inflater.inflate(getLayout(), container, false);
+			View rootView = inflater.inflate(getLayout(),
+					container, false);
 			return rootView;
 		}
 
 		@Override
 		public void onAttach(Activity activity) {
 			super.onAttach(activity);
+<<<<<<< HEAD
+			((P1Nmain) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+=======
 			((P1Nmain) activity).onSectionAttached(getSection());
 		}
 
@@ -166,6 +162,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 
 		public int getSection() {
 			return getArguments().getInt(ARG_SECTION_NUMBER);
+>>>>>>> e1b7a33578f32d3039b2a9c126893c5881230a3e
 		}
 	}
 

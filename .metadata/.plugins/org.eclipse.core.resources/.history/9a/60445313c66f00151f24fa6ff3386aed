@@ -20,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:singleLine="true"
         android:hint="@string/enter_name_of_door"
         android:paddingTop="25dip" >
 
@@ -53,7 +52,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"     
         android:gravity="center"
-        android:text="Add"
+        android:text="Connect"
         android:textSize="30sp" />
 
 </LinearLayout>

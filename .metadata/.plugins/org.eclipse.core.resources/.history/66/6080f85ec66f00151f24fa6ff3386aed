@@ -190,9 +190,6 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 				@Override
 				public void onClick(View v) {
 					String doorName = ((EditText) rootView.findViewById(R.id.editText1)).getText().toString().trim();
-					if (doorName.equals("")) {
-						P1NErrors.nameMustNotBeEmpty(this, main);
-					}
 					String sMasterKey = ((EditText) rootView.findViewById(R.id.editText2)).getText().toString();
 					int masterKey;
 					try {
@@ -229,7 +226,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 				lp.gravity = Gravity.CENTER;
 				b.setLayoutParams(lp);
 				b.setTextSize(30);
-				b.setHeight(250);
+				b.setHeight(130);
 				b.setId(i);
 				b.setText(dis.get(i).name);
 				b.setOnClickListener(ocl);

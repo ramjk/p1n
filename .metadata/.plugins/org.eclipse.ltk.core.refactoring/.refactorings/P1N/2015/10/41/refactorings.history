@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;p1nata.p1n.P1NErrors.errorNotFound(...)&apos; to &apos;bluetoothNotFound&apos;&#x0A;- Original project: &apos;P1N&apos;&#x0A;- Original element: &apos;p1nata.p1n.P1NErrors.errorNotFound(...)&apos;&#x0A;- Renamed element: &apos;p1nata.p1n.P1NErrors.bluetoothNotFound(...)&apos;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;errorNotFound&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;p1nata.p1n{P1NErrors.java[P1NErrors~errorNotFound~QP1Nmain;" name="bluetoothNotFound" references="true" stamp="1444516208597" version="1.0"/>
+</session>

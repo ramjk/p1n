@@ -1,0 +1,10 @@
+package p1nata.p1n;
+
+public class P1NErrors {
+
+	public static void errorNotFound(P1Nmain p1Nmain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

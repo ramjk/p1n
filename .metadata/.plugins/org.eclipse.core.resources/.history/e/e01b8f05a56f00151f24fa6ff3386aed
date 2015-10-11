@@ -1,0 +1,8 @@
+package p1nata.p1n;
+
+public class BluetoothUtils {
+	
+	public static void sendMessage(long message){
+		
+	}
+}

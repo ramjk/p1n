@@ -1,32 +1,27 @@
 package p1nata.p1n;
 
-import android.app.Activity;
+import org.xml.sax.ErrorHandler;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
-public class P1Nmain extends Activity implements
-		NavigationDrawerFragment.NavigationDrawerCallbacks {
-
+public class P1Nmain extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+	public static final int REQUEST_ENABLE_BT = 123456;
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
 	 */
 	private NavigationDrawerFragment mNavigationDrawerFragment;
-
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -43,18 +38,15 @@ public class P1Nmain extends Activity implements
 		mTitle = getTitle();
 
 		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-				(DrawerLayout) findViewById(R.id.drawer_layout));
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 	}
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager
-				.beginTransaction()
-				.replace(R.id.container,
-						PlaceholderFragment.newInstance(position + 1)).commit();
+		fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+				.commit();
 	}
 
 	public void onSectionAttached(int number) {
@@ -102,6 +94,29 @@ public class P1Nmain extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void checkBluetoothEnabled() {
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (mBluetoothAdapter == null) {
+			P1NErrors.bluetoothNotFound(this);
+		}
+		if (!mBluetoothAdapter.isEnabled()) {
+			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+		case REQUEST_ENABLE_BT:
+			if (resultCode != Activity.RESULT_OK) {
+				P1NErrors.bluetoothNotEnabled(this);
+			}
+			break;
+		}
+	}
+
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -127,10 +142,8 @@ public class P1Nmain extends Activity implements
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(getLayout(),
-					container, false);
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+			View rootView = inflater.inflate(getLayout(), container, false);
 			return rootView;
 		}
 

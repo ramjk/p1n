@@ -1,0 +1,10 @@
+package p1nata.p1n;
+
+public class P1NErrors {
+
+	public static void bluetoothNotFound(P1Nmain main) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

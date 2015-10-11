@@ -5,3 +5,5 @@
 1444536063828	Rename local variable 'intentOpenBluetoothSettings'
 1444536409862	Rename method 'idMustBeNonEmpty'
 1444536499532	Rename local variable 'io'
+1444542417914	Delete element
+1444543246918	Rename method 'validationError'

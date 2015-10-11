@@ -43,8 +43,8 @@ public class P1Nmain extends Activity implements
 	private CharSequence mTitle;
 	private Stack<Fragment> goBack = new Stack<Fragment>();
 	private boolean useStack = false;
-	private P1NIO io = new P1NIO(this);
-	private P1NErrors err = new P1NErrors(this);
+	public P1NIO io = new P1NIO(this);
+	public P1NErrors err = new P1NErrors(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +139,7 @@ public class P1Nmain extends Activity implements
 
 	protected void processDoor(DoorInfo doorInfo) {
 		useStack = true;
-		setFragment(new DoorUI(doorInfo));
+		setFragment(new DoorUI(this, doorInfo));
 	}
 
 	private void setFragment(Fragment f) {

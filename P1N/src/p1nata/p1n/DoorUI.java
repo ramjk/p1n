@@ -12,9 +12,11 @@ import android.widget.TextView;
 
 public class DoorUI extends Fragment {
 	private final DoorInfo info;
+	private final P1Nmain main;
 
-	public DoorUI(DoorInfo info) {
+	public DoorUI(P1Nmain main, DoorInfo info) {
 		this.info = info;
+		this.main = main;
 	}
 
 	@Override
@@ -25,8 +27,12 @@ public class DoorUI extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Log.e("P1N", "Unlocking " + info.write());
-
-				// TODO unlock
+				try {
+					P1Nbackend.unlock(getActivity(), info);
+				} catch (Exception e) {
+					e.printStackTrace();
+					main.err.errorConnecting(info.mac_address);
+				}
 			}
 		});
 		((Button) v.findViewById(R.id.button3)).setOnClickListener(new OnClickListener() {

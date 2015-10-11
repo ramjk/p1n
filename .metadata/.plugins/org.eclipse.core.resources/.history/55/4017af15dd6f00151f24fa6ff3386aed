@@ -1,0 +1,31 @@
+package p1nata.p1n;
+
+import java.util.Set;
+
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+
+public class P1Nbackend {
+
+	public static BluetoothDevice getDeviceByAddress(DoorInfo info){
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		// TODO Auto-generated method stub
+		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+		// If there are paired devices
+		if (pairedDevices.size() > 0) {
+		    // Loop through paired devices
+		    for (BluetoothDevice device : pairedDevices) {
+		        // Add the name and address to an array adapter to show in a ListView
+		    	if(device.getAddress().equals(info.mac_address)){
+		    		return device;
+		    	}
+		    }
+		}
+		throw new IllegalStateException();
+	}
+	public static void unlock(Activity activity, DoorInfo info) {
+		
+	}
+
+}

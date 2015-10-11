@@ -1,22 +1,33 @@
 package p1nata.p1n;
 
-import org.xml.sax.ErrorHandler;
+import java.util.List;
 
-import android.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager.LayoutParams;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
-public class P1Nmain extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class P1Nmain extends Activity implements
+		NavigationDrawerFragment.NavigationDrawerCallbacks {
 	public static final int REQUEST_ENABLE_BT = 123456;
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -28,6 +39,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
+	private P1NIO io = new P1NIO(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +51,18 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		mTitle = getTitle();
 
 		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+				(DrawerLayout) findViewById(R.id.drawer_layout));
 	}
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+		fragmentManager
+				.beginTransaction()
+				.replace(R.id.container,
+						PlaceholderFragment.newInstance(position + 1, this))
 				.commit();
 	}
 
@@ -96,12 +112,14 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	}
 
 	public void checkBluetoothEnabled() {
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
+				.getDefaultAdapter();
 		if (mBluetoothAdapter == null) {
 			P1NErrors.bluetoothNotFound(this);
 		}
 		if (!mBluetoothAdapter.isEnabled()) {
-			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			Intent enableBtIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 		}
 	}
@@ -118,6 +136,11 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		}
 	}
 
+	protected void processDoor(DoorInfo doorInfo) {
+		// TODO Auto-generated method stub
+		Log.e("P1N", "Process door " + doorInfo.write());
+	}
+
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -131,21 +154,100 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
-		public static PlaceholderFragment newInstance(int sectionNumber) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
+		public static PlaceholderFragment newInstance(int sectionNumber,
+				P1Nmain io) {
+			PlaceholderFragment fragment = new PlaceholderFragment(io);
 			Bundle args = new Bundle();
 			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 			fragment.setArguments(args);
 			return fragment;
 		}
 
-		public PlaceholderFragment() {
+		private P1Nmain main;
+
+		public PlaceholderFragment(P1Nmain io) {
+			this.main = io;
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+
 			View rootView = inflater.inflate(getLayout(), container, false);
+			switch (getLayout()) {
+			case R.layout.doors:
+				loadDoors(rootView);
+				break;
+			case R.layout.addnewmasterkey:
+				addNewMasterKey(rootView);
+			}
 			return rootView;
+		}
+
+		private void addNewMasterKey(final View rootView) {
+			final Spinner sp = (Spinner) rootView.findViewById(R.id.spinner1);
+			final BluetoothDevice[] devices = BluetoothAdapter
+					.getDefaultAdapter().getBondedDevices()
+					.toArray(new BluetoothDevice[0]);
+			String[] data = new String[devices.length + 1];
+			data[0] = "Select a bluetooth device";
+			for (int i = 0; i < devices.length; i++) {
+				data[i + 1] = devices[i].getName();
+			}
+			ArrayAdapter<String> aas = new ArrayAdapter<String>(getActivity(),
+					android.R.layout.simple_spinner_item, data);
+			sp.setAdapter(aas);
+			Button b = (Button) rootView.findViewById(R.id.button1);
+			b.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String doorName = ((EditText) rootView
+							.findViewById(R.id.editText1)).getText().toString();
+					String sMasterKey = ((EditText) rootView
+							.findViewById(R.id.editText2)).getText().toString();
+					int masterKey;
+					try {
+						masterKey = Integer.parseInt(sMasterKey);
+					} catch (NumberFormatException e) {
+						P1NErrors.idMustBeNumeric(this, main, sMasterKey);
+						return;
+					}
+					int selected = sp.getSelectedItemPosition();
+					if (selected == 0) {
+						P1NErrors.needToSelectABluetoothDevice(this, main);
+						return;
+					}
+					BluetoothDevice device = devices[selected - 1];
+					main.io.writeDoor(doorName, masterKey, device);
+				}
+			});
+		}
+
+		private void loadDoors(final View rootView) {
+			LinearLayout ll = (LinearLayout) rootView
+					.findViewById(R.id.linearLayout);
+			final List<DoorInfo> dis = main.io.readDoors();
+			OnClickListener ocl = new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					main.processDoor(dis.get(v.getId()));
+				}
+			};
+			for (int i = 0; i < dis.size(); i++) {
+				Button b = new Button(getActivity());
+				LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT,
+						LayoutParams.WRAP_CONTENT);
+				lp.horizontalMargin = 10;
+				lp.verticalMargin = 5;
+				lp.gravity = Gravity.CENTER;
+				b.setLayoutParams(lp);
+				b.setTextSize(30);
+				b.setHeight(130);
+				b.setId(i);
+				b.setText(dis.get(i).name);
+				b.setOnClickListener(ocl);
+				ll.addView(b);
+			}
 		}
 
 		@Override

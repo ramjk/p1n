@@ -2,6 +2,7 @@ package p1nata.p1n;
 
 import java.util.List;
 
+import android.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -10,7 +11,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,6 +40,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	 */
 	private CharSequence mTitle;
 	private P1NIO io = new P1NIO(this);
+	private P1NErrors err = new P1NErrors(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	public void checkBluetoothEnabled() {
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (mBluetoothAdapter == null) {
-			P1NErrors.bluetoothNotFound(this);
+			err.bluetoothNotFound(this);
 		}
 		if (!mBluetoothAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -122,7 +123,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		switch (requestCode) {
 		case REQUEST_ENABLE_BT:
 			if (resultCode != Activity.RESULT_OK) {
-				P1NErrors.bluetoothNotEnabled(this);
+				err.bluetoothNotEnabled(this);
 			}
 			break;
 		}
@@ -156,8 +157,8 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 
 		private P1Nmain main;
 
-		public PlaceholderFragment(P1Nmain io) {
-			this.main = io;
+		public PlaceholderFragment(P1Nmain main) {
+			this.main = main;
 		}
 
 		@Override
@@ -192,19 +193,19 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 				public void onClick(View v) {
 					String doorName = ((EditText) rootView.findViewById(R.id.editText1)).getText().toString().trim();
 					if (doorName.equals("")) {
-						P1NErrors.nameMustNotBeEmpty(this, main);
+						main.err.nameMustNotBeEmpty();
 					}
 					String sMasterKey = ((EditText) rootView.findViewById(R.id.editText2)).getText().toString();
 					int masterKey;
 					try {
 						masterKey = Integer.parseInt(sMasterKey);
 					} catch (NumberFormatException e) {
-						P1NErrors.idMustBeNumeric(this, main, sMasterKey);
+						main.err.needMasterKey();
 						return;
 					}
 					int selected = sp.getSelectedItemPosition();
 					if (selected == 0) {
-						P1NErrors.needToSelectABluetoothDevice(this, main);
+						main.err.needToSelectABluetoothDevice();
 						return;
 					}
 					BluetoothDevice device = devices[selected - 1];

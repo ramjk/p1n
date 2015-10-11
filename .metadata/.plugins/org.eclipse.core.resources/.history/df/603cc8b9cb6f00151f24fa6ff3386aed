@@ -1,0 +1,43 @@
+package p1nata.p1n;
+
+import android.app.AlertDialog;
+import android.view.View.OnClickListener;
+
+public class P1NErrors {
+
+	public P1NErrors(P1Nmain main) {
+		this.main = main;
+	}
+
+	private P1Nmain main;
+
+	public void error(String title, String message, OnClickListener onDismiss, OnClickListener onOK) {
+		new AlertDialog.Builder(main).setTitle()
+	}
+
+	public void bluetoothNotFound(P1Nmain main) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void bluetoothNotEnabled(P1Nmain p1Nmain) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void needToSelectABluetoothDevice(OnClickListener onClickListener, P1Nmain main) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void idMustBeNumeric(OnClickListener onClickListener, P1Nmain main, String sMasterKey) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void nameMustNotBeEmpty(OnClickListener onClickListener, P1Nmain main) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -2,3 +2,6 @@
 1444521832402	Delete element
 1444523330548	Rename field 'id'
 1444523562439	Rename local variable 'id'
+1444536063828	Rename local variable 'intentOpenBluetoothSettings'
+1444536409862	Rename method 'idMustBeNonEmpty'
+1444536499532	Rename local variable 'io'

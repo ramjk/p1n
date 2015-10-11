@@ -132,8 +132,7 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	}
 
 	protected void processDoor(DoorInfo doorInfo) {
-		// TODO Auto-generated method stub
-		Log.e("P1N", "Process door " + doorInfo.write());
+		getFragmentManager().beginTransaction().replace(R.id.container, new DoorUI(doorInfo)).commit();
 	}
 
 	/**

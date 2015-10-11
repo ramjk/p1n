@@ -31,16 +31,14 @@ public class P1Nbackend {
 				.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
 		socket.connect();
 		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-		writeIntLE(dos, encrypt(info.masterkey));
+		dos.writeInt(encrypt(info.masterkey));
 	}
-
 	public static void writeIntLE(DataOutputStream out, int value) throws IOException {
-		out.writeByte(value & 0xFF);
-		out.writeByte((value >> 8) & 0xFF);
-		out.writeByte((value >> 16) & 0xFF);
-		out.writeByte((value >> 24) & 0xFF);
-	}
-
+		  out.writeByte(value & 0xFF);
+		  out.writeByte((value >> 8) & 0xFF);
+		  out.writeByte((value >> 16) & 0xFF);
+		  out.writeByte((value >> 24) & 0xFF);
+		}
 	private static int encrypt(int masterkey) {
 		// TODO Auto-generated method stub
 		return 0;

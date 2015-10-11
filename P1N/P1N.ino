@@ -39,6 +39,8 @@ bool authenticate(long unencrypted_PIN, long received_PIN) {
 }
 
 void setup() {
+  pinMode(12, OUTPUT);
+  digitalWrite(12, HIGH);
   myservo.attach(5);
   Serial.begin(9600);
 }
@@ -53,12 +55,18 @@ void loop() {
     for(int i = 0; i < max_i; i++) {
       bytes.bytes[i] = Serial.read();
     }
+    while(Serial.available()) Serial.read();
+    digitalWrite(12, LOW);
     Serial.println(bytes.value);
     if(authenticate(masterPIN, bytes.value)) {
       myservo.write(180);
       delay(3000);
       myservo.write(0);
-  }
+    }
+    delay(1000);
+    Serial.println("3.3 should be off");
+    digitalWrite(12, HIGH);
+    while(Serial.available()) Serial.read();
   }
 }
 

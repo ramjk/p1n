@@ -9,10 +9,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,7 +26,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 public class P1Nmain extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -193,16 +192,15 @@ public class P1Nmain extends Activity implements
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-
-			View rootView = inflater.inflate(getLayout(), container, false);
 			switch (getLayout()) {
 			case R.layout.doors:
-				loadDoors(rootView);
-				break;
+				return loadDoors(inflater, container, savedInstanceState);
 			case R.layout.addnewmasterkey:
-				addNewMasterKey(rootView);
+				View v = inflater.inflate(getLayout(), container, false);
+				addNewMasterKey(v);
+				return v;
 			}
-			return rootView;
+			return null;
 		}
 
 		private void addNewMasterKey(final View rootView) {
@@ -250,19 +248,15 @@ public class P1Nmain extends Activity implements
 			});
 		}
 
-		private void loadDoors(final View rootView) {
-			LinearLayout ll = (LinearLayout) rootView
-					.findViewById(R.id.linearLayout);
+		private View loadDoors(LayoutInflater inflater,
+				final ViewGroup container, Bundle savedInstanceState) {
 			final List<DoorInfo> dis = main.io.readDoors();
 			if (dis.size() == 0) {
-				TextView tv = new TextView(main);
-				LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT);
-				tv.setText("You have no doors. Please go to 'Add New Door' to add a new door.");
-				lp.horizontalMargin = 200;
-				tv.setLayoutParams(lp);
-				ll.addView(tv);
+				return inflater.inflate(R.layout.doorsempty, container, false);
 			}
+			View rootView = inflater.inflate(getLayout(), container, false);
+			LinearLayout ll = (LinearLayout) rootView
+					.findViewById(R.id.linearLayout);
 			OnClickListener ocl = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -284,6 +278,7 @@ public class P1Nmain extends Activity implements
 				b.setOnClickListener(ocl);
 				ll.addView(b);
 			}
+			return rootView;
 		}
 
 		@Override

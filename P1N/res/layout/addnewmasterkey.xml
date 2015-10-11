@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:singleLine="true"
         android:hint="@string/enter_name_of_door"
         android:paddingTop="25dip" >
 
@@ -32,7 +33,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/enter_new_master_key"
-        android:inputType="textPassword"
+        android:inputType="numberPassword"
         android:paddingTop="25dip" />
 
     <Spinner
@@ -47,12 +48,24 @@
     <Button
         android:id="@+id/button1"
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
         android:layout_marginTop="25dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"     
         android:gravity="center"
-        android:text="Connect"
+        android:text="Add"
         android:textSize="30sp" />
+    
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="5dip"
+        android:paddingTop="25dip"
+        android:text="If you do not see your device, \n 1) Turn on Bluetooth \n 2) Pre-Pair your Bluetooth \n 3) Restart P1N"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#696969"
+        android:textSize="14sp" />
 
 </LinearLayout>

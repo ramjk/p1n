@@ -1,20 +1,32 @@
 package p1nata.p1n;
 
-import org.xml.sax.ErrorHandler;
+import java.util.List;
+import java.util.Stack;
 
-import android.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager.LayoutParams;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 public class P1Nmain extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 	public static final int REQUEST_ENABLE_BT = 123456;
@@ -28,6 +40,9 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
+	private Stack<Fragment> goBack;
+	public P1NIO io = new P1NIO(this);
+	public P1NErrors err = new P1NErrors(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,20 +60,16 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
-		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-				.commit();
+		setFragment(PlaceholderFragment.newInstance(position + 1, this));
 	}
 
 	public void onSectionAttached(int number) {
 		switch (number) {
 		case 1:
 			mTitle = getString(R.string.title_section1);
-			// setContentView(R.layout.doors);
 			break;
 		case 2:
 			mTitle = getString(R.string.title_section2);
-			// setContentView(R.layout.addnewmasterkey);
 			break;
 		}
 	}
@@ -98,7 +109,8 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	public void checkBluetoothEnabled() {
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (mBluetoothAdapter == null) {
-			P1NErrors.bluetoothNotFound(this);
+			err.bluetoothNotFound(this);
+			return;
 		}
 		if (!mBluetoothAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -112,10 +124,31 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		switch (requestCode) {
 		case REQUEST_ENABLE_BT:
 			if (resultCode != Activity.RESULT_OK) {
-				P1NErrors.bluetoothNotEnabled(this);
+				err.bluetoothNotEnabled(this);
+				return;
 			}
 			break;
 		}
+	}
+
+	protected void processDoor(DoorInfo doorInfo) {
+		Fragment f = new DoorUI(doorInfo);
+		goBack.push(f);
+		setFragment(f);
+	}
+
+	private void setFragment(Fragment f) {
+		FragmentManager fragmentManager = getFragmentManager();
+		fragmentManager.beginTransaction().replace(R.id.container, f).commit();
+
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (goBack.isEmpty())
+			super.onBackPressed();
+		else
+			setFragment(goBack.pop());
 	}
 
 	/**
@@ -131,21 +164,106 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 		/**
 		 * Returns a new instance of this fragment for the given section number.
 		 */
-		public static PlaceholderFragment newInstance(int sectionNumber) {
-			PlaceholderFragment fragment = new PlaceholderFragment();
+		public static PlaceholderFragment newInstance(int sectionNumber, P1Nmain io) {
+			PlaceholderFragment fragment = new PlaceholderFragment(io);
 			Bundle args = new Bundle();
 			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 			fragment.setArguments(args);
 			return fragment;
 		}
 
-		public PlaceholderFragment() {
+		private P1Nmain main;
+
+		public PlaceholderFragment(P1Nmain main) {
+			this.main = main;
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
 			View rootView = inflater.inflate(getLayout(), container, false);
+			switch (getLayout()) {
+			case R.layout.doors:
+				loadDoors(rootView);
+				break;
+			case R.layout.addnewmasterkey:
+				addNewMasterKey(rootView);
+			}
 			return rootView;
+		}
+
+		private void addNewMasterKey(final View rootView) {
+			final Spinner sp = (Spinner) rootView.findViewById(R.id.spinner1);
+			final BluetoothDevice[] devices = BluetoothAdapter.getDefaultAdapter().getBondedDevices()
+					.toArray(new BluetoothDevice[0]);
+			String[] data = new String[devices.length + 1];
+			data[0] = "Select a bluetooth device";
+			for (int i = 0; i < devices.length; i++) {
+				data[i + 1] = devices[i].getName();
+			}
+			ArrayAdapter<String> aas = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
+					data);
+			sp.setAdapter(aas);
+			Button b = (Button) rootView.findViewById(R.id.button1);
+			b.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String doorName = ((EditText) rootView.findViewById(R.id.editText1)).getText().toString().trim();
+					if (doorName.equals("")) {
+						main.err.nameMustNotBeEmpty();
+						return;
+					}
+					String sMasterKey = ((EditText) rootView.findViewById(R.id.editText2)).getText().toString();
+					int masterKey;
+					try {
+						masterKey = Integer.parseInt(sMasterKey);
+					} catch (NumberFormatException e) {
+						main.err.needMasterKey();
+						return;
+					}
+					int selected = sp.getSelectedItemPosition();
+					if (selected == 0) {
+						main.err.needToSelectABluetoothDevice();
+						return;
+					}
+					BluetoothDevice device = devices[selected - 1];
+					main.io.writeDoor(doorName, masterKey, device);
+					main.onNavigationDrawerItemSelected(0);
+				}
+			});
+		}
+
+		private void loadDoors(final View rootView) {
+			LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.linearLayout);
+			final List<DoorInfo> dis = main.io.readDoors();
+			if (dis.size() == 0) {
+				TextView tv = new TextView(main);
+				LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				tv.setText("You have no doors. Please go to 'Add New Door' to add a new door.");
+				lp.horizontalMargin = 200;
+				tv.setLayoutParams(lp);
+				ll.addView(tv);
+			}
+			OnClickListener ocl = new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					main.processDoor(dis.get(v.getId()));
+				}
+			};
+			for (int i = 0; i < dis.size(); i++) {
+				Button b = new Button(getActivity());
+				LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				lp.horizontalMargin = 10;
+				lp.verticalMargin = 5;
+				lp.gravity = Gravity.CENTER;
+				b.setLayoutParams(lp);
+				b.setTextSize(30);
+				b.setHeight(250);
+				b.setId(i);
+				b.setText(dis.get(i).name);
+				b.setOnClickListener(ocl);
+				ll.addView(b);
+			}
 		}
 
 		@Override

@@ -14,19 +14,16 @@ public class P1NErrors {
 
 	}
 
-	public static void needToSelectABluetoothDevice(OnClickListener onClickListener, P1Nmain main) {
+	public static void needToSelectABluetoothDevice(
+			OnClickListener onClickListener, P1Nmain main) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public static void idMustBeNumeric(OnClickListener onClickListener, P1Nmain main, String sMasterKey) {
+	public static void idMustBeNumeric(OnClickListener onClickListener,
+			P1Nmain main, String sMasterKey) {
 		// TODO Auto-generated method stub
-
-	}
-
-	public static void nameMustNotBeEmpty(OnClickListener onClickListener, P1Nmain main) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 }

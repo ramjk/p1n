@@ -43,7 +43,7 @@ public class P1NErrors {
 
 	}
 
-	public void backtoFocusErrorDialog(String title, String message) {
+	public void validationError(String title, String message) {
 		new AlertDialog.Builder(main).setTitle(title).setMessage(message)
 				.setPositiveButton("OK", new OnClickListener() {
 					@Override
@@ -55,22 +55,22 @@ public class P1NErrors {
 	}
 
 	public void needToSelectABluetoothDevice() {
-		backtoFocusErrorDialog("Bluetooth Device Missing", "Please select a bluetooth device");
+		validationError("Bluetooth Device Missing", "Please select a bluetooth device");
 	}
 
 	public void needMasterKey() {
-		backtoFocusErrorDialog("Master Key Missing", "The Master Key must not be empty");
+		validationError("Master Key Missing", "The Master Key must not be empty");
 
 	}
 
 	public void nameMustNotBeEmpty() {
-		backtoFocusErrorDialog("Door Name Missing", "The Door Name must not be empty");
+		validationError("Door Name Missing", "The Door Name must not be empty");
 
 	}
 
 	public void errorConnecting(String mac_address) {
-		backtoFocusErrorDialog("Connection error",
-				"Unable to connect. Try turning your phone onto airplane mode and off again");
+		// TODO Auto-generated method stub
+		
 	}
 
 }

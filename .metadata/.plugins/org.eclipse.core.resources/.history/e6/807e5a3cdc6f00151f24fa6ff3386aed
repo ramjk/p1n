@@ -41,8 +41,8 @@ public class P1Nmain extends Activity implements NavigationDrawerFragment.Naviga
 	 */
 	private CharSequence mTitle;
 	private Stack<Fragment> goBack;
-	public P1NIO io = new P1NIO(this);
-	public P1NErrors err = new P1NErrors(this);
+	private P1NIO io = new P1NIO(this);
+	private P1NErrors err = new P1NErrors(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

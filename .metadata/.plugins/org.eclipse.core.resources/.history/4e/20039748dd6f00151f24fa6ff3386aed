@@ -27,10 +27,11 @@ public class DoorUI extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Log.e("P1N", "Unlocking " + info.write());
-				try {
-					P1Nbackend.unlock(getActivity(), info);
-				} catch (Exception e) {
-					main.err.errorConnecting(info.mac_address);
+				try{
+				P1Nbackend.unlock(getActivity(), info);
+				
+				}catch(IllegalStateException e){
+					main.err.macAddressMissing(info.mac_address);
 				}
 			}
 		});

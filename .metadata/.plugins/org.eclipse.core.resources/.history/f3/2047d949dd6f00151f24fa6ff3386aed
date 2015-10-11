@@ -29,6 +29,7 @@ public class DoorUI extends Fragment {
 				Log.e("P1N", "Unlocking " + info.write());
 				try {
 					P1Nbackend.unlock(getActivity(), info);
+
 				} catch (Exception e) {
 					main.err.errorConnecting(info.mac_address);
 				}
